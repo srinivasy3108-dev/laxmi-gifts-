@@ -1,0 +1,483 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laxmi's Little Birthday Surprise 💗</title>
+<style>
+:root{--bg:#11152f;--card:#222544;--pink:#ffb8d2;--lav:#c9b7ff;--white:#fff8fd;--muted:#d0c9e5}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at top,#37305c,transparent 45%),var(--bg);color:var(--white);font-family:"Trebuchet MS",Arial,sans-serif;text-align:center;min-height:100vh}
+#app{max-width:650px;margin:auto;padding:25px 16px 45px}
+.hidden{display:none!important}.screen{animation:appear .35s ease}
+@keyframes appear{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{50%{transform:translateY(-9px) rotate(2deg)}}
+h1{font-size:clamp(2rem,8vw,3.2rem);line-height:1.15}
+h2{color:var(--pink);line-height:1.35}
+p{line-height:1.8}
+.eyebrow{color:var(--lav);font-size:.75rem;letter-spacing:2px;text-transform:uppercase}
+.sub{color:var(--muted)}.heart{color:var(--pink)}
+.panel{background:#222544ef;border:1px solid #c9b7ff40;border-radius:23px;padding:22px 17px;margin:20px 0}
+.btn{background:var(--pink);color:#29172f;border:0;border-radius:999px;padding:13px 20px;margin:6px 3px;font-weight:bold;cursor:pointer}
+.btn.secondary{background:#343657;color:white;border:1px solid #77709f}
+.btn:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid white;outline-offset:3px}
+.cake{font-size:7rem;display:block;cursor:pointer;animation:float 3s infinite}
+.flame{font-size:2.2rem;display:block}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:22px 0}
+.gift{background:linear-gradient(145deg,#292b50,#1a1c38);border:1px solid #70628f;border-radius:20px;color:white;padding:17px 8px;min-height:150px;cursor:pointer}
+.gift .emoji{font-size:2.3rem;display:block;margin-bottom:10px}
+.gift strong{color:var(--pink);line-height:1.5}
+.gift small{display:block;color:var(--muted);margin-top:7px}
+.gift.selected{border:2px solid var(--pink)}
+.note{background:#fff3fa;color:#30213d;border-radius:17px;padding:22px 18px;text-align:left;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.9}
+.field{display:block;width:100%;background:#171a38;color:white;border:1px solid #77709f;border-radius:13px;padding:13px;margin:12px 0;font:inherit}
+textarea.field{min-height:115px;resize:vertical}
+.option{display:block;width:100%;text-align:left;padding:13px;margin:9px 0;border:1px solid #77709f;border-radius:13px;background:#292b4b;color:white;cursor:pointer}
+.option.selected{border:2px solid var(--pink);background:#403452}
+.feedback{color:var(--lav);min-height:26px}
+.progress{height:5px;background:#353653;border-radius:10px;overflow:hidden;margin:20px 0}
+.progress span{display:block;height:100%;background:var(--pink);transition:width .3s}
+.envelope{background:linear-gradient(140deg,#ffcee2,#c9b7ff);color:#382547;border-radius:20px;padding:25px 12px;margin:25px auto;max-width:340px;animation:float 3s infinite}
+.envelope .emoji{font-size:4rem}
+footer{color:#aaa4c8;font-size:.8rem;margin-top:35px}
+@media(max-width:380px){#app{padding:20px 12px 35px}.panel{padding:18px 13px}.grid{gap:8px}}
+</style>
+</head>
+<body>
+<main id="app">
+
+<section id="welcome" class="screen">
+<p>✦ ♡ ✧ ♡ ✦</p>
+<p class="eyebrow">A little surprise made with love</p>
+<h1>Happy Birthday,<br><span class="heart">Laxmi</span> ♡</h1>
+<div class="panel">
+<p>Some little memories, a few things I wanted to say, and a tiny surprise made just for you. 🥹💕</p>
+<p class="sub">Ready to open your little birthday world?</p>
+<p style="font-size:2rem">🎀 ✨ 💌</p>
+</div>
+<button class="btn" onclick="go('cake')">Start the Surprise →</button>
+</section>
+
+<section id="cake" class="screen hidden">
+<p class="eyebrow">Your little birthday ritual</p>
+<h1>Make a wish! 🎂</h1>
+<p class="sub">Tap the candle to blow it out.</p>
+<div class="panel">
+<span id="flame" class="flame">🕯️</span>
+<span class="cake" onclick="blow()">🎂</span>
+<p id="cakeMsg">One tiny wish, just for you. 💗</p>
+<button id="blowBtn" class="btn" onclick="blow()">Blow the candle ✨</button>
+<button id="cakeNext" class="btn hidden" onclick="go('quiz')">Continue →</button>
+</div>
+</section>
+
+<section id="quiz" class="screen hidden">
+<p class="eyebrow">A little annoying game 😭</p>
+<h1>How well do you know me?</h1>
+<p class="sub">Five little questions. Answer honestly! 👀</p>
+<div class="progress"><span id="qProgress" style="width:20%"></span></div>
+<div class="panel">
+<p class="eyebrow" id="qNumber"></p>
+<h2 id="qTitle"></h2>
+<div id="qArea"></div>
+<p id="qFeedback" class="feedback" aria-live="polite"></p>
+<button id="qSubmit" class="btn" onclick="submitQ()">Check answer →</button>
+<button id="qNext" class="btn hidden" onclick="nextQ()">Next question →</button>
+</div>
+</section>
+
+<section id="gifts" class="screen hidden">
+<p class="eyebrow">Made especially for you</p>
+<h1>Your Little Gifts 🎁</h1>
+<p class="sub">Four little cards, four little feelings.</p>
+<div class="grid">
+<button class="gift" id="gift0" onclick="pickGift(0)">
+<span class="emoji">🎨</span><strong>Our Best Memories</strong>
+<small>Little moments I remember</small>
+</button>
+<button class="gift" id="gift1" onclick="pickGift(1)">
+<span class="emoji">🌷</span><strong>Things I Appreciate</strong>
+<small>Little things that matter</small>
+</button>
+<button class="gift" id="gift2" onclick="pickGift(2)">
+<span class="emoji">💌</span><strong>A Letter for You</strong>
+<small>Something from my heart</small>
+</button>
+<button class="gift" id="gift3" onclick="pickGift(3)">
+<span class="emoji">🎀</span><strong>One Last Surprise</strong>
+<small>Keep going to discover it</small>
+</button>
+</div>
+<div class="panel" id="giftDetail">
+<h2>Pick a little card ♡</h2>
+<p class="sub">Tap a card to open its little message.</p>
+</div>
+<button class="btn" onclick="startSlips()">Open the message slips →</button>
+</section>
+
+<section id="slips" class="screen hidden">
+<p class="eyebrow">Little things I wanted to tell you</p>
+<h1>Message Slips 💌</h1>
+<div class="progress"><span id="slipProgress"></span></div>
+<p id="slipCount" class="sub"></p>
+<div class="panel">
+<p id="slipCategory" class="eyebrow"></p>
+<h2 id="slipTitle"></h2>
+<div id="slipText" class="note"></div>
+<button id="slipNext" class="btn" onclick="nextSlip()">Next →</button>
+</div>
+<button class="btn secondary" onclick="go('gifts')">← Back to Gifts</button>
+</section>
+
+<section id="letter1" class="screen hidden">
+<p class="eyebrow">A letter, just for you</p>
+<h1>The Things I Never Say ✉️</h1>
+<div id="envelope1" class="envelope">
+<div class="emoji">💌</div>
+<h2 style="color:#382547">For Laxmi</h2>
+<p>Tap to open your letter ✨</p>
+</div>
+<button id="open1" class="btn" onclick="openLetter(1)">Open the letter 💗</button>
+<div id="content1" class="hidden">
+<div class="progress"><span id="lp1"></span></div>
+<p id="lc1" class="sub"></p>
+<div class="panel">
+<div id="lt1" class="note"></div>
+<button id="ln1" class="btn" onclick="nextLetter(1)">Next →</button>
+</div>
+</div>
+<button class="btn secondary" onclick="go('gifts')">← Back to Gifts</button>
+</section>
+
+<section id="letter2" class="screen hidden">
+<p class="eyebrow">Something I've wanted to tell you ✨</p>
+<h1>One Little Wish 🌷</h1>
+<div id="envelope2" class="envelope">
+<div class="emoji">💌</div>
+<h2 style="color:#382547">Hey, Laxmi…</h2>
+<p>There's a little wish inside.</p>
+</div>
+<button id="open2" class="btn" onclick="openLetter(2)">Open the letter 💗</button>
+<div id="content2" class="hidden">
+<div class="progress"><span id="lp2"></span></div>
+<p id="lc2" class="sub"></p>
+<div class="panel">
+<div id="lt2" class="note"></div>
+<button id="ln2" class="btn" onclick="nextLetter(2)">Next →</button>
+</div>
+</div>
+<button class="btn secondary" onclick="go('gifts')">← Back to Gifts</button>
+</section>
+
+<section id="finish" class="screen hidden">
+<p>♡ ✦ ♡ ✦ ♡</p>
+<h1>That's everything,<br><span class="heart">Laxmi</span> 💗</h1>
+<div class="panel">
+<p>I hope these little messages made you smile, even for a moment.</p>
+<p>Happy Birthday once again! 🌷</p>
+<p class="heart">— Your friend, Srinu ♡</p>
+</div>
+<button class="btn" onclick="go('gifts')">🎁 Back to Gifts</button>
+<button class="btn secondary" onclick="startOver()">Start again ↺</button>
+</section>
+
+<footer>Made with little thoughts & lots of care ♡</footer>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+
+function go(id){
+document.querySelectorAll(".screen").forEach(s=>s.classList.add("hidden"));
+$(id).classList.remove("hidden");
+window.scrollTo({top:0,behavior:"smooth"});
+}
+
+let candleOut=false;
+
+function blow(){
+if(candleOut)return;
+candleOut=true;
+$("flame").textContent="✨";
+$("cakeMsg").textContent="Wish made! May your new year be full of happy little moments. 💗";
+$("blowBtn").classList.add("hidden");
+$("cakeNext").classList.remove("hidden");
+}
+
+const questions=[
+{
+title:"What do you think, who do I like the most?",
+options:["A. Aditi","B. Laxmi","C. Someone else","D. No one"],
+correct:1,
+right:"Hehe, you got it! 👀💕",
+wrong:"Nopeee 😭 Try again, detective!"
+},
+{
+title:"Who do you think is my favourite person?",
+type:"text",
+correct:"laxmi",
+right:"Correct! You know me too well. 💗",
+wrong:"ERROR 404: WRONG ANSWER 😭💻 Try again!"
+},
+{
+title:"What do you think our relationship is?",
+options:["A. Just friends","B. Best friends","C. Normal classmates","D. More than best friend, but I don't have words to explain"],
+correct:3,
+right:"You chose that one… interesting answer. 🥹💗",
+wrong:"Not the answer I had in mind 👀 Try again!"
+},
+{
+title:"What are your best memories with me?",
+type:"textarea",
+right:"Aww, thanks for sharing that memory. 🥹"
+},
+{
+title:"What would you do if you woke up one day and found out from someone else that I was no longer in this world?",
+type:"textarea",
+right:"Thank you for sharing what's on your mind. 💗"
+}
+];
+
+let qi=0,qa=["","","","",""],selection=null,checked=false;
+
+function renderQ(){
+const q=questions[qi];
+
+$("qNumber").textContent=`Question ${qi+1} of 5`;
+$("qProgress").style.width=`${(qi+1)*20}%`;
+$("qTitle").textContent=q.title;
+$("qFeedback").textContent="";
+$("qArea").innerHTML="";
+$("qSubmit").classList.remove("hidden");
+$("qNext").classList.add("hidden");
+$("qSubmit").textContent=q.correct!==undefined?"Check answer →":"Save answer →";
+
+selection=null;
+checked=false;
+
+if(q.options){
+q.options.forEach((v,i)=>{
+const b=document.createElement("button");
+b.className="option";
+b.textContent=v;
+b.onclick=()=>{
+if(checked)return;
+selection=i;
+document.querySelectorAll(".option").forEach(x=>x.classList.remove("selected"));
+b.classList.add("selected");
+};
+$("qArea").appendChild(b);
+});
+}else{
+const el=document.createElement(q.type==="text"?"input":"textarea");
+el.className="field";
+el.placeholder="Write your answer here...";
+el.value=qa[qi];
+el.setAttribute("aria-label","Your answer");
+el.oninput=()=>qa[qi]=el.value;
+$("qArea").appendChild(el);
+}
+}
+
+function submitQ(){
+const q=questions[qi];
+
+if(q.options&&selection===null){
+$("qFeedback").textContent="Choose an answer first! 😭";
+return;
+}
+
+if(q.options)qa[qi]=String(selection);
+
+if(q.correct!==undefined){
+const ok=q.type==="text"
+?qa[qi].trim().toLowerCase()===q.correct
+:selection===q.correct;
+
+if(!ok){
+$("qFeedback").textContent=q.wrong;
+return;
+}
+$("qFeedback").textContent=q.right;
+}else{
+$("qFeedback").textContent=q.right;
+}
+
+checked=true;
+$("qSubmit").classList.add("hidden");
+$("qNext").classList.remove("hidden");
+$("qNext").textContent=qi===4?"Go to Gifts →":"Next question →";
+}
+
+function nextQ(){
+if(qi<4){
+qi++;
+renderQ();
+}else{
+go("gifts");
+}
+}
+
+const details=[
+["Our Best Memories 🎨","The day we spent drawing and ended up having such a long conversation. Some ordinary moments turn into favourite memories without warning."],
+["Things I Appreciate 🌷","Your little actions, the moments that make me smile, and the way an ordinary school day can become memorable."],
+["A Letter for You 💌","A few things I've wanted to say but couldn't always find the words for."],
+["One Last Surprise 🎀","Keep going, Laxmi. There are little messages and two longer letters waiting for you!"]
+];
+
+function pickGift(i){
+for(let n=0;n<4;n++){
+$("gift"+n).classList.toggle("selected",i===n);
+}
+$("giftDetail").innerHTML="";
+const h=document.createElement("h2");
+const p=document.createElement("p");
+h.textContent=details[i][0];
+p.textContent=details[i][1];
+$("giftDetail").append(h,p);
+}
+
+const slips=[
+{
+cat:"Our Best Memories",
+title:"A Little Secret 🤭",
+text:"I had been noticing you since the day I came to school. And yes, you're not the only one who keeps staring at someone… I'm one of them too. 🤭✨"
+},
+{
+cat:"Our Best Memories",
+title:"That Drawing Day 🎨",
+text:"The day we had that long conversation while working on the drawing… That day became my favourite day of the year. I wish we could have more days like that, again and again, so that every single day of my month could feel just as happy and memorable."
+},
+{
+cat:"Things I Appreciate",
+title:"Your Little Things 😊",
+text:"You made me happy without even saying anything. It's your tiny little things that somehow make me feel better. You may not even realise it, but those small moments help turn my ordinary days into good and memorable ones. 😊💕"
+},
+{
+cat:"Things I Appreciate",
+title:"A Tiny Pinterest Wish 💌",
+text:"I wish you could talk to me on social apps too… but why don't you? 🥹💗\n\nI have a feeling that you're the one talking to me from that ID, and maybe you're just reading my messages because you think I'm not someone you want to talk to. But if that's what you think, you're wrong… 😭\n\nYou could even text me on Pinterest, you know? There's an option to message someone there too. 👀💌\n\nMy username is Srinu_XD (please don't judge my username, it's 6 years old 😭😭💀)."
+}
+];
+
+let si=0;
+
+function startSlips(){
+si=0;
+renderSlip();
+go("slips");
+}
+
+function renderSlip(){
+const s=slips[si];
+$("slipCategory").textContent=s.cat;
+$("slipTitle").textContent=s.title;
+$("slipText").textContent=s.text;
+$("slipCount").textContent=`Message ${si+1} of ${slips.length}`;
+$("slipProgress").style.width=`${(si+1)/slips.length*100}%`;
+$("slipNext").textContent=si===slips.length-1?"Next: Big Letter 1 →":"Next →";
+}
+
+function nextSlip(){
+if(si<slips.length-1){
+si++;
+renderSlip();
+window.scrollTo({top:0,behavior:"smooth"});
+}else{
+go("letter1");
+}
+}
+
+const letters={
+1:[
+"Sometimes, I don't know how to explain the little things I feel, so I keep them to myself.",
+"You probably don't realise how much happiness your tiny little actions bring me. Even an ordinary conversation with you can turn into something I'll remember for a long time.",
+"That day when we were drawing and ended up having such a long conversation? I still remember it. I wish there could be more days like that, because somehow, even an ordinary day feels special when I get to share a little part of it with you.",
+"I love those cute little moments when you try to tease me with your pretty white watch. When you angle its dial towards the sunlight and make the reflection fall across my face and eyes, I secretly enjoy that kind of teasing more than I let you know. I would never tell you to stop doing that… but honestly, could you do it again for me? 😭💕",
+"I don't expect you to do anything special. I just wanted you to know that the little moments we share genuinely mean something to me. 🥹💕\n\n— Srinu ♡"
+],
+2:[
+"Hey, Laxmi…",
+"There's one little thing I wish for. I wish we could talk more, not just at school, but sometimes outside school too.",
+"I've wondered whether you ever feel like starting a conversation with me but decide not to. Maybe I'm overthinking it, or maybe I'm completely wrong. 😭",
+"If you ever want to talk, you can always message me on Pinterest too. My username is Srinu_XD — and please don't judge it, because that username is literally six years old. 💀😂",
+"Whatever you think after reading this, I hope you know that I appreciate the friendship and the little memories we've made. No pressure to say anything special back. I just wanted to be honest with you. 💗\n\n— Your friend, Srinu 🌷"
+]
+};
+
+const li={1:0,2:0};
+const opened={1:false,2:false};
+
+function openLetter(n){
+opened[n]=true;
+$("envelope"+n).classList.add("hidden");
+$("open"+n).classList.add("hidden");
+$("content"+n).classList.remove("hidden");
+li[n]=0;
+renderLetter(n);
+window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function renderLetter(n){
+const arr=letters[n],i=li[n];
+$("lt"+n).textContent=arr[i];
+$("lc"+n).textContent=`Part ${i+1} of ${arr.length}`;
+$("lp"+n).style.width=`${(i+1)/arr.length*100}%`;
+$("ln"+n).textContent=i===arr.length-1
+?(n===1?"Next: Big Letter 2 →":"Finish 🎀")
+:"Next →";
+}
+
+function nextLetter(n){
+if(li[n]<letters[n].length-1){
+li[n]++;
+renderLetter(n);
+window.scrollTo({top:0,behavior:"smooth"});
+return;
+}
+if(n===1)go("letter2");
+else go("finish");
+}
+
+// FIX: Reset all progress when Start Again is clicked.
+function startOver(){
+candleOut=false;
+qi=0;
+qa=["","","","",""];
+selection=null;
+checked=false;
+si=0;
+li[1]=0;
+li[2]=0;
+opened[1]=false;
+opened[2]=false;
+
+$("flame").textContent="🕯️";
+$("cakeMsg").textContent="One tiny wish, just for you. 💗";
+$("blowBtn").classList.remove("hidden");
+$("cakeNext").classList.add("hidden");
+
+for(let n=0;n<4;n++){
+$("gift"+n).classList.remove("selected");
+}
+
+$("giftDetail").innerHTML=
+'<h2>Pick a little card ♡</h2><p class="sub">Tap a card to open its little message.</p>';
+
+$("envelope1").classList.remove("hidden");
+$("open1").classList.remove("hidden");
+$("content1").classList.add("hidden");
+
+$("envelope2").classList.remove("hidden");
+$("open2").classList.remove("hidden");
+$("content2").classList.add("hidden");
+
+renderQ();
+go("welcome");
+}
+
+renderQ();
+</script>
+</body>
+</html>
